@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -63,54 +62,57 @@ public class Bot {
    boolean reconnect;
    boolean useProxy;
    int proxyType;
-   HashMap<String, Integer> proxyServers = new HashMap();
+   HashMap<String, Integer> proxyServers = new HashMap<String, Integer>();
    List<String> proxyServersAsList;
 
-   public void start() {
-      Scanner scanner = new Scanner(System.in);
-      System.out.print("Введите айпи и порт сервера (127.0.0.1:25565): ");
-      String[] ipParts = scanner.nextLine().split(":");
-      this.ip = ipParts[0];
-      this.port = Integer.parseInt(ipParts[1]);
-      System.out.print("Введите кол-во ботов (500): ");
-      this.botsAmount = Integer.parseInt(scanner.nextLine());
-      System.out.print("Введите кол-во ядер (15): ");
-      this.threadsAmount = Integer.parseInt(scanner.nextLine());
-      System.out.print("Введите имя ботов (bot_): ");
-      this.botsName = scanner.nextLine();
-      System.out.print("Введите сообщение которые будут вводить при входе боты. Для мульти сообщений используйте ';', чтобы разделить их. (/register 1234 1234;Hello): ");
-      this.messages = scanner.nextLine().split(";");
-      System.out.print("Боты при входе будут выбрасывать предметы? y/n (y): ");
-      this.dropInv = scanner.nextLine().equals("y");
-      System.out.print("Боты будут переподключаться? y/n (y): ");
-      this.reconnect = scanner.nextLine().equals("y");
-      System.out.print("Использовать прокси? y/n (y): ");
-      this.useProxy = scanner.nextLine().equals("y");
-      if (this.useProxy) {
-         System.out.println("1. SOCKS4\n");
-         System.out.println("2. SOCKS5\n");
-         System.out.println("3. HTTP\n");
-         System.out.println("Выберите тип прокси: ");
-         this.proxyType = Integer.parseInt(scanner.nextLine());
-         System.out.println("Введите путь до файла с прокси, у которых формат ip:port: ");
-         String proxyPath = scanner.next();
-         if(useProxy) {
-         if(proxyPath == null) return;
-         }
-         try {
-            Files.readAllLines(Paths.get(proxyPath)).forEach((line) -> {
-               String[] proxyParts = line.split(":");
-               if (proxyParts.length == 2) {
-                  this.proxyServers.put(proxyParts[0], Integer.parseInt(proxyParts[1]));
-               }
+   @SuppressWarnings("unused")
+public void start() {
+      try (Scanner scanner = new Scanner(System.in)) {
+		System.out.print("Введите айпи и порт сервера (127.0.0.1:25565): ");
+		  String[] ipParts = scanner.nextLine().split(":");
+		  this.ip = ipParts[0];
+		  this.port = Integer.parseInt(ipParts[1]);
+		  System.out.print("Введите кол-во ботов (500): ");
+		  this.botsAmount = Integer.parseInt(scanner.nextLine());
+		  System.out.print("Введите кол-во ядер (15): ");
+		  this.threadsAmount = Integer.parseInt(scanner.nextLine());
+		  System.out.print("Введите имя ботов (bot_): ");
+		  this.botsName = scanner.nextLine();
+		  System.out.print("Введите сообщение которые будут вводить при входе боты. Для мульти сообщений используйте ';', чтобы разделить их. (/register 1234 1234;Hello): ");
+		  this.messages = scanner.nextLine().split(";");
+		  System.out.print("Боты при входе будут выбрасывать предметы? y/n (y): ");
+		  this.dropInv = scanner.nextLine().equals("y");
+		  System.out.print("Боты будут переподключаться? y/n (y): ");
+		  this.reconnect = scanner.nextLine().equals("y");
+		  System.out.print("Использовать прокси? y/n (y): ");
+		  this.useProxy = scanner.nextLine().equals("y");
+		  if (this.useProxy) {
+		     System.out.println("1. SOCKS4\n");
+		     System.out.println("2. SOCKS5\n");
+		     System.out.println("3. HTTP\n");
+		     System.out.println("Выберите тип прокси: ");
+		     this.proxyType = Integer.parseInt(scanner.nextLine());
+		     System.out.println("Введите путь до файла с прокси, у которых формат ip:port: ");
+		     String proxyPath = scanner.next();
+		     if(useProxy) {
+		     if(proxyPath == null) return;
+		     }
+		     try {
+		        Files.readAllLines(Paths.get(proxyPath)).forEach((line) -> {
+		           String[] proxyParts = line.split(":");
+		           if (proxyParts.length == 2) {
+		              this.proxyServers.put(proxyParts[0], Integer.parseInt(proxyParts[1]));
+		           }
 
-            });
-         } catch (IOException var7) {
-         }
+		        });
+		     } catch (IOException var7) {
+		     }
 
-         this.proxyServersAsList = new ArrayList(this.proxyServers.keySet());
-      }
-
+		     this.proxyServersAsList = new ArrayList<String>(this.proxyServers.keySet());
+		  }
+	} catch (NumberFormatException e) {
+		e.printStackTrace();
+	}
       System.out.println("Создание ботов....");
       ExecutorService executor = Executors.newFixedThreadPool(this.threadsAmount);
 
@@ -121,8 +123,8 @@ public class Bot {
             SessionService sessionService = new SessionService();
             final TcpClientSession bot;
             if (this.useProxy) {
-               String randomProxyIp = (String)this.proxyServersAsList.get((new Random()).nextInt(this.proxyServersAsList.size()));
-               Integer randomProxyPort = (Integer)this.proxyServers.get(randomProxyIp);
+               String randomProxyIp = this.proxyServersAsList.get((new Random()).nextInt(this.proxyServersAsList.size()));
+               Integer randomProxyPort = this.proxyServers.get(randomProxyIp);
                ProxyInfo proxyInfo = null;
                switch(this.proxyType) {
                case 1:
@@ -174,7 +176,7 @@ public class Bot {
                }
 
                public void packetReceived(Session session, Packet packet) {
-                  if (packet instanceof ClientboundLoginPacket) {
+                  if(packet instanceof ClientboundLoginPacket) {
                      this.currentSession = session;
                      this.loggedIn = true;
                      this.viewDistance = ((ClientboundLoginPacket)packet).getViewDistance();
@@ -377,8 +379,9 @@ public class Bot {
          YAW,
          PITCH;
 
-         // $FF: synthetic method
-         private static Bot.Vec3D.Relative[] $values() {
+
+         @SuppressWarnings("unused")
+		 private static Bot.Vec3D.Relative[] $values() {
             return new Bot.Vec3D.Relative[]{X, Y, Z, YAW, PITCH};
          }
       }

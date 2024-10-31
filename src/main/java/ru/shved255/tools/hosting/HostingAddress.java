@@ -93,19 +93,6 @@ public class HostingAddress {
         HostingAddress adr = new HostingAddress(ip, port, timeout);
         return adr;
     }
-    public static HostingAddress generateAU(int timeout) {
-        String begin = "49.12.87";
-        String node = String.valueOf(Choice.getRandomInt(231, 231));
-        String port = String.valueOf(Choice.getRandomInt(20000, 35000));
-        String ip = begin + "." + node; 
-        try {
-            InetAddress.getByName(ip);
-        } catch (UnknownHostException ex) {
-            return HostingAddress.generateCH(timeout);
-        }
-        HostingAddress adr = new HostingAddress(ip, port, timeout);
-        return adr;
-    }
     public static HostingAddress generateAU1(int timeout) {
         String begin = "116.202.48";
         String node = String.valueOf(Choice.getRandomInt(240, 240));
@@ -280,43 +267,38 @@ public class HostingAddress {
     }
 
     public static HostingAddress generate(Boolean flag, int timeout) {	
-        int randomChoice = Choice.getRandomInt(0, 13);
-        switch (randomChoice) {
-            case 0:
-                return HostingAddress.generateHM(flag, timeout);
-            case 1:
-            	return HostingAddress.generateCH(timeout);    
-            case 2:
-                return HostingAddress.generateBH(timeout);
-            case 3:
-                return HostingAddress.generateAU(timeout);
-            case 4:
-                return HostingAddress.generateAU1(timeout);   
-            case 5:
-                return HostingAddress.generateAU2(timeout);
-            case 6:
-                return HostingAddress.generateUS(timeout);
-            case 7:
-                return HostingAddress.generateZ(timeout);
-            case 8:
-                return HostingAddress.generateZ1(timeout);  
-            case 9:
-                return HostingAddress.generateMS(timeout);  
-            case 10:
-                return HostingAddress.generateMS1(timeout);    
-            case 11:
-                return HostingAddress.generateSR(timeout);    
-            case 12:
-                return HostingAddress.generateGA(timeout);   
-            case 13:
-                return HostingAddress.generateGA1(timeout); 
-            case 14:
-                return HostingAddress.generateRE(timeout);   
-            case 15:
-                return HostingAddress.generateOU(timeout);   
-            default:     
-                return HostingAddress.generateHM(flag, timeout);
-                
+        int randomChoice = Choice.getRandomInt(0, 14);
+        if(randomChoice == 0) {
+        	return HostingAddress.generateHM(flag, timeout);
+        } else if(randomChoice == 1) {
+        	return HostingAddress.generateCH(timeout);   
+        } else if(randomChoice == 2) {
+        	return HostingAddress.generateBH(timeout);
+        } else if(randomChoice == 3) {
+        	return HostingAddress.generateAU1(timeout); 
+        } else if(randomChoice == 4) {
+        	return HostingAddress.generateAU2(timeout);
+        } else if(randomChoice == 5) {
+        	return HostingAddress.generateUS(timeout);
+        } else if(randomChoice == 6) {
+        	return HostingAddress.generateZ(timeout);
+        } else if(randomChoice == 7) { 
+        	return HostingAddress.generateZ1(timeout);  
+        } else if(randomChoice == 8) {
+        	return HostingAddress.generateMS(timeout);  
+        } else if(randomChoice == 9) {
+        	return HostingAddress.generateMS1(timeout); 
+        } else if(randomChoice == 10) {
+        	return HostingAddress.generateSR(timeout); 
+        } else if(randomChoice == 11) {
+        	return HostingAddress.generateGA(timeout);  
+        } else if(randomChoice == 12) {
+        	return HostingAddress.generateGA1(timeout); 
+        } else if(randomChoice == 13) {
+        	return HostingAddress.generateRE(timeout);  
+        } else if(randomChoice == 14) {
+           	return HostingAddress.generateOU(timeout);   
         }
+        return HostingAddress.generateHM(flag, timeout);
     }
 }
