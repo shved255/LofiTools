@@ -23,7 +23,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	    <id>testrepo</id>
 		<url>https://repo.ajg0702.us/releases</url>
 	</repository>
-	
   </repositories>
 
   <dependencies>
